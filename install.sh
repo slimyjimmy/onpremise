@@ -108,7 +108,7 @@ echo "${_endgroup}"
 
 echo "${_group}Checking minimum requirements ..."
 DOCKER_VERSION=$(docker version --format '{{.Server.Version}}')
-COMPOSE_VERSION=$($dc --version | sed 's//usr/local/bin/docker-compose version \(.\{1,\}\),.*/\1/')
+COMPOSE_VERSION=$($dc --version | sed 's/usr/local/bin/docker-compose version \(.\{1,\}\),.*/\1/')
 RAM_AVAILABLE_IN_DOCKER=$(docker run --rm busybox free -m 2>/dev/null | awk '/Mem/ {print $2}');
 CPU_AVAILABLE_IN_DOCKER=$(docker run --rm busybox nproc --all);
 
