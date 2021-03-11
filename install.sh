@@ -49,7 +49,7 @@ show_help() {
   cat <<EOF
 Usage: $0 [options]
 
-Install Sentry with docker-compose.
+Install Sentry with /usr/local/bin/docker-compose.
 
 Options:
  -h, --help             Show this message and exit.
@@ -93,7 +93,7 @@ cleanup () {
     echo "An error occurred, caught SIG$1 on line $2";
 
     if [[ -n "$MINIMIZE_DOWNTIME" ]]; then
-      echo "*NOT* cleaning up, to clean your environment run \"docker-compose stop\"."
+      echo "*NOT* cleaning up, to clean your environment run \"/usr/local/bin/docker-compose stop\"."
     else
       echo "Cleaning up..."
     fi
@@ -108,7 +108,7 @@ echo "${_endgroup}"
 
 echo "${_group}Checking minimum requirements ..."
 DOCKER_VERSION=$(docker version --format '{{.Server.Version}}')
-COMPOSE_VERSION=$($dc --version | sed 's/docker-compose version \(.\{1,\}\),.*/\1/')
+COMPOSE_VERSION=$($dc --version | sed 's//usr/local/bin/docker-compose version \(.\{1,\}\),.*/\1/')
 RAM_AVAILABLE_IN_DOCKER=$(docker run --rm busybox free -m 2>/dev/null | awk '/Mem/ {print $2}');
 CPU_AVAILABLE_IN_DOCKER=$(docker run --rm busybox nproc --all);
 
@@ -131,7 +131,7 @@ if [[ "$(ver $DOCKER_VERSION)" -lt "$(ver $MIN_DOCKER_VERSION)" ]]; then
 fi
 
 if [[ "$(ver $COMPOSE_VERSION)" -lt "$(ver $MIN_COMPOSE_VERSION)" ]]; then
-  echo "FAIL: Expected minimum docker-compose version to be $MIN_COMPOSE_VERSION but found $COMPOSE_VERSION"
+  echo "FAIL: Expected minimum /usr/local/bin/docker-compose version to be $MIN_COMPOSE_VERSION but found $COMPOSE_VERSION"
   exit 1
 fi
 
@@ -236,7 +236,7 @@ replace_tsdb
 echo "${_endgroup}"
 
 echo "${_group}Fetching and updating Docker images ..."
-# We tag locally built images with an '-onpremise-local' suffix. docker-compose pull tries to pull these too and
+# We tag locally built images with an '-onpremise-local' suffix. /usr/local/bin/docker-compose pull tries to pull these too and
 # shows a 404 error on the console which is confusing and unnecessary. To overcome this, we add the stderr>stdout
 # redirection below and pass it through grep, ignoring all lines having this '-onpremise-local' suffix.
 $dc pull -q --ignore-pull-failures 2>&1 | grep -v -- -onpremise-local || true
@@ -326,7 +326,7 @@ if [[ -n "$CI" || "$SKIP_USER_PROMPT" == 1 ]]; then
   echo "Did not prompt for user creation due to non-interactive shell."
   echo "Run the following command to create one yourself (recommended):"
   echo ""
-  echo "  docker-compose run --rm web createuser"
+  echo "  /usr/local/bin/docker-compose run --rm web createuser"
   echo ""
 else
   $dcr web upgrade
@@ -377,7 +377,7 @@ else
   echo ""
   echo "You're all done! Run the following command to get Sentry running:"
   echo ""
-  echo "  docker-compose up -d"
+  echo "  /usr/local/bin/docker-compose up -d"
   echo ""
   echo "-----------------------------------------------------------------"
   echo ""
